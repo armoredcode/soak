@@ -82,7 +82,7 @@ jobs:
       - name: Build SOAK Engine
         run:
           docker build -t soak-engine
-          [https://github.com/yourusername/soak.git](https://github.com/yourusername/soak.git)
+          [https://github.com/armorerdcode/soak.git](https://github.com/armorerdcode/soak.git)
 
       - name: Run SOAK Scan
         run: |
