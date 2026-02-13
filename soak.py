@@ -122,15 +122,15 @@ def run():
             "-u",
             f"{os.getuid()}:{os.getgid()}",
             "-v",
-            f"{target}:/src",
+            f"{mount_target}:/src",
             "-v",
-            f"{reports}:/reports",
+            f"{reports_abs}:/reports",
         ]
 
     cmd.append(IMAGE_NAME)
 
     print(f"\033[94mSOAK v{VERSION}\033[0m | \033[93m{runtime.upper()}\033[0m")
-    print(f"\033[90mTarget: {target} @ {commit}\033[0m\n")
+    print(f"\033[90mTarget: {target_abs} @ {commit}\033[0m\n")
 
     try:
         subprocess.run(cmd, check=True)
