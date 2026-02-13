@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-import os, subprocess, shutil, sys, argparse, datetime
+import os, subprocess, shutil, sys, argparse, datetime, tempfile
 
-VERSION = "1.1.0"
+VERSION = "1.1.1"
 IMAGE_NAME = "soak-engine"
 
 
@@ -82,12 +82,20 @@ def run():
     if args.update or datetime.datetime.now().second % 10 == 0:  # Check occasionally
         check_updates()
 
-    target = os.path.abspath(args.path)
-    reports = os.path.abspath(args.output)
-    if not os.path.exists(reports):
-        os.makedirs(reports)
+    # --- Path Management (The Colon Fix) ---
+    target_abs = os.path.abspath(args.path)
+    reports_abs = os.path.abspath(args.output)
+    os.makedirs(reports_abs, exist_ok=True)
 
-    commit, branch = get_git_metadata(target)
+    tmp_link = None
+    mount_target = target_abs
+
+    if ":" in target_abs:
+        tmp_link = os.path.join(tempfile.gettempdir(), f"soak_safe_{os.getpid()}")
+        os.symlink(target_abs, tmp_link)
+        mount_target = tmp_link
+
+    commit, branch = get_git_metadata(target_abs)
 
     cmd = [
         runtime,
@@ -105,9 +113,9 @@ def run():
         cmd += [
             "--userns=keep-id",
             "-v",
-            f"{target}:/src:Z",
+            f"{mount_target}:/src:Z",
             "-v",
-            f"{reports}:/reports:Z",
+            f"{reports_abs}:/reports:Z",
         ]
     else:
         cmd += [

@@ -6,6 +6,28 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.1] - 2026-02-13
+
+### Fixed
+
+- The Colon Trap: Resolved the incorrect volume format error caused by host
+  paths containing colons (:) by implementing a temporary safe symbolic link in
+  /tmp. This ensures stability across different storage drivers without
+  modifying original folder names.
+
+- Path Sanitization: Enforced absolute path resolution using os.path.abspath to
+  prevent volume mounting issues on strictly-configured container runtimes.
+
+### Added
+
+- Integrated Update Engine: Added a multi-tier update checker that monitors both
+  the Tumbleweed image age (notifying if tools are >14 days old) and Git origin
+  (checking for new script versions on GitHub).
+
+- Full Traceability: Re-integrated and improved get_git_metadata to pass the
+  target's commit hash and branch name into the container for comprehensive
+  security auditing.
+
 ## [1.1.0] - 2026-02-13
 
 ### Added
