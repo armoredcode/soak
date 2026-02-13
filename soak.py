@@ -115,12 +115,12 @@ def run():
     if runtime == "podman":
         cmd += [
             "--userns=keep-id",
-            "--security-opt label=disable",
             "-v",
             f"{mount_target}:/src:Z",
             "-v",
             f"{reports_abs}:/reports:Z",
         ]
+        cmd += ["--security-opt", "label=disable"]
     else:
         cmd += [
             "-u",
