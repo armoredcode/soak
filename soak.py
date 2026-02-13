@@ -91,7 +91,10 @@ def run():
     mount_target = target_abs
 
     if ":" in target_abs:
-        tmp_link = os.path.join(tempfile.gettempdir(), f"soak_safe_{os.getpid()}")
+        # tmp_link = os.path.join(tempfile.gettempdir(), f"soak_safe_{os.getpid()}")
+        safe_base = os.path.expanduser("~/.soak_tmp")
+        os.makedirs(safe_base, exist_ok=True)
+        tmp_link = os.path.join(safe_base, f"link_{os.getpid()}")
         os.symlink(target_abs, tmp_link)
         mount_target = tmp_link
 
@@ -112,6 +115,7 @@ def run():
     if runtime == "podman":
         cmd += [
             "--userns=keep-id",
+            "--security-opt label=disable",
             "-v",
             f"{mount_target}:/src:Z",
             "-v",
