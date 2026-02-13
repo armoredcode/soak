@@ -6,6 +6,27 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.2] - 2026-02-13
+
+### Added
+
+- **Zero-Mount Architecture**: Completely re-engineered the container
+  interaction logic. Replaced bind mounts (`-v`/`--mount`) with a "Direct
+  Injection" workflow using `cp`. This bypasses kernel-level restrictions like
+  `remount-private: permission denied` common in hardened rootless environments.
+- **Improved Path Resilience**: The new injection method natively handles
+  special characters (including colons `:`) in source paths without requiring
+  symbolic links or complex escaping.
+
+### Changed
+
+- **Workflow Execution**: Analysis now follows a `Create` -> `Inject` -> `Start`
+  -> `Extract` -> `Cleanup` pattern, ensuring maximum compatibility with
+  restricted server filesystems (e.g., shared home directories, SELinux/AppArmor
+  strict profiles).
+- **Container Lifecycle**: Implemented unique container naming based on
+  timestamps to allow concurrent scan executions without resource conflicts.
+
 ## [1.1.1] - 2026-02-13
 
 ### Fixed
